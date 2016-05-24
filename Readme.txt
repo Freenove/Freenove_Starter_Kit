@@ -1,17 +1,3 @@
-Warning
-  When you purchase or use this product, please note the following:
-    This product contains small parts. Swallowing or improper operation them can cause serious infections and death. Seek immediate medical attention when the accident happened.
-    Do not allow children under 3 years old to play with or near this product. Please place this product in where children under 3 years of age cannot reach.
-    Do not allow children lack of ability of safe to use this product alone without parental care.
-    Never use this product and its parts near any AC electrical outlet or other circuits to avoid the potential risk of electric shock.
-    Never use this product near any liquid and fire.
-    Keep conductive materials away from this product.
-    Never store or use this product in any extreme environments such as extreme hot or cold, high humidity and etc. 
-    Remember to turn off circuits when not in use this product or when left.
-    Do not touch any moving and rotating parts of this product while they are operating.
-    Some parts of this product may become warm to touch when used in certain circuit designs. This is normal. Improper operation may cause excessively overheating.
-    Using this product not in accordance with the specification may cause damage to the product.
-
 About
   Freenove is an open-source electronics platform. Freenove is committed to helping customer quickly realize the creative idea and product prototypes, making it easy to get started for enthusiasts of programing and electronics and launching innovative open source products. Our services include:
     Electronic components and modules
