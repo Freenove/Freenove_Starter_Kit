@@ -2,11 +2,13 @@
 
 References
   The references for this product includes the following folders and files:
-    Datasheet	    Datasheet of electronic components and modules 
-    Libraries	    Library files of Arduino Software
-    Sketches	    Code of Arduino Software
+    Datasheet	    Datasheet for electronic components and modules
+    Libraries	    Libraries for Arduino sketches
+    Processing      Sketches for Interacting with Processing projects
+    Sketches	    Sketches for Arduino projects
     Readme.txt	    Instructions
-    Tutorial.pdf    Tutorial
+    Tutorial.pdf    Tutorial for Arduino
+    Processing.pdf  Tutorial for Interacting with Processing
 
   You can click the green Clone or download button in this page, then click Download ZIP to get all these files in zip format. If you have any difficulties, you can send email to our support for help.
 
