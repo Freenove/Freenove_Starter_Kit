@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   SerialDevice
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  *******************************************************************************
  * Brief
  *   This class is used to connect a specific serial port.
@@ -31,27 +31,27 @@ import processing.serial.*;
 /*
  * Brief  This class is used to save serial command
  *****************************************************************************/
-static class SerialCommand
+class SerialCommand
 {
   // Trans control command, range 200 ~ 255
-  static byte transStart = (byte)200;
-  static byte transEnd = (byte)201;
+  final static byte transStart = (byte)200;
+  final static byte transEnd = (byte)201;
 
   // General command , range 0 ~ 199
   // The odd command is sent by the requesting party
   // The even command is sent by the responding party
   // Request echo, to confirm the device
-  static byte requestEcho = 0;      // Comm
+  final static byte requestEcho = 0;      // Comm
   // Respond echo, to tell this is the device
-  static byte echo = 1;             // Comm
+  final static byte echo = 1;             // Comm
   // Request 1 analog value
-  static byte requestAnalog = 10;   // Comm 
+  final static byte requestAnalog = 10;   // Comm 
   // Respond 1 analog value
-  static byte Analog = 11;          // Comm A/100 A%100
+  final static byte Analog = 11;          // Comm A/100 A%100
   // Request n analog values
-  static byte requestAnalogs = 12;  // Comm n
+  final static byte requestAnalogs = 12;  // Comm n
   // Respond n analog values
-  static byte Analogs = 13;         // Comm A1/100 A1%100 ... An/100 An%100
+  final static byte Analogs = 13;         // Comm A1/100 A1%100 ... An/100 An%100
 }
 
 /*
@@ -60,9 +60,12 @@ static class SerialCommand
  *****************************************************************************/
 class SerialDevice
 {
+  private final static int readTimeOut = 30;
+
+  private PApplet parent;
+  private boolean active = false;
   public Serial serial;
   public String serialName;
-  private PApplet parent;
 
   SerialDevice(PApplet pApplet)
   {
@@ -71,13 +74,12 @@ class SerialDevice
 
   public boolean active()
   {
-    if (serial != null)
-      return serial.active();
-    return false;
+    return active;
   }
 
   public boolean start()
   {
+    stop();
     println(time() + "Start connect device...");
     String[] serialNames = Serial.list();
     if (serialNames.length == 0)
@@ -90,7 +92,6 @@ class SerialDevice
     println("");
     for (int i = 0; i < serialNames.length; i++)
     {
-      stop();
       println(time() + "Attempt to connect " + serialNames[i] + "...");
       try {
         serial = new Serial(parent, serialNames[i], 115200);
@@ -99,7 +100,7 @@ class SerialDevice
         byte[] data = new byte[1];
         data[0] = SerialCommand.requestEcho;
         write(serial, data);
-        delay(100);
+        delay(200);
         data = read(serial);
         if (data != null)
         {
@@ -107,11 +108,12 @@ class SerialDevice
           {
             serialName = serialNames[i];
             println(time() + "Device connection success: " + serialDevice.serialName);
+            active = true;
             return true;
           }
         }
         serial.stop();
-      } 
+      }
       catch (Exception e) {
         e.printStackTrace();
       }
@@ -122,9 +124,11 @@ class SerialDevice
 
   public void stop()
   {
-    if (serial != null)
-      if (serial.active())
-        serial.stop();
+    if (active())
+    {
+      active = false;
+      serial.stop();
+    }
   }
 
   public boolean write(byte[] data)
@@ -160,48 +164,43 @@ class SerialDevice
 
   private byte[] read(Serial serial)
   {
-    byte[] inData = new byte[1024];
-    int inNum;
+    byte[] inData = new byte[64];
+    int inDataNum = 0;
+    int startTime = millis();
 
-    if (serial.available() > 0)
+    do
     {
-      inNum = serial.readBytes(inData);
-
-      int inDataStart = 0;
-      int inDataEnd = 0;
-      for (int i = 0; i < inNum; i++)
+      if (serial.available() > 0)
       {
-        if (inData[i]==SerialCommand.transStart)
-        {
-          inDataStart = i;
-        }
-        if (inData[i]==SerialCommand.transEnd)
-        {
-          inDataEnd = i;
-        }
-      }
+        byte[] inTemp = new byte[1];
+        serial.readBytes(inTemp);
+        byte inByte = inTemp[0];
+        inData[inDataNum++] = inByte;
 
-      if (inDataStart >= 0 && inDataEnd > inDataStart)
-      {
-        byte[] data = new byte[inDataEnd - inDataStart - 1];
-        for (int i = 0; i < inDataEnd - inDataStart - 1; i++)
+        if (inByte == SerialCommand.transStart)
+          inDataNum = 0;
+        else if (inByte == SerialCommand.transEnd)
         {
-          data[i] = inData[inDataStart + i + 1];
+          byte[] data = new byte[inDataNum];
+          for (int i = 0; i < inDataNum; i++)
+            data[i] = inData[i];
+          return data;
         }
-        return data;
+        startTime = millis();
       }
     }
+    while (millis () - startTime < readTimeOut);
+
     return null;
   }
 
-  int requestAnalog()
+  public int requestAnalog()
   {
     byte[] data = new byte[1];
     data[0] = SerialCommand.requestAnalog;
     write(data);
-    delay(20);
     data = read();
-    if (data!=null)
+    if (data != null)
     {
       if (data[0] == SerialCommand.Analog)
       {
@@ -211,13 +210,12 @@ class SerialDevice
     return -1;
   }
 
-  int[] requestAnalogs(int number)
+  public int[] requestAnalogs(int number)
   {
     byte[] data = new byte[2];
     data[0] = SerialCommand.requestAnalogs;
     data[1] = (byte)number;
     write(data);
-    delay(20 + number / 5);  // Tested 5ms(send 3bytes + receive 3bytes) + 17ms/100bytes extra
     data = read();
     if (data != null)
     {
@@ -234,8 +232,35 @@ class SerialDevice
     return null;
   }
 
-  String time()
+  public String time()
   {
     return hour() + ":" + minute() + ":" + second() + " ";
   }
 }
+
+/*
+ * Brief  This class is used to contorol call time interval of draw function, 
+ *        try to make time interval as the same.
+ *****************************************************************************/
+class DrawControl
+{
+  private int drawCycle = 0;
+  private int drawTimes = 0;
+
+  DrawControl(int DrawCycle)
+  {
+    drawCycle = DrawCycle;
+  }
+
+  public void reset()
+  {
+    drawTimes = millis() / drawCycle;
+  }
+
+  public void delay()
+  {
+    while (millis () < drawTimes * drawCycle);
+    drawTimes++;
+  }
+}
+

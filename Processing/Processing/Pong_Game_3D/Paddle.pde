@@ -37,7 +37,7 @@ class Paddle {
   void display()
   {
     rect(position.x, position.y, size.width, size.height);
-    
+
     pushMatrix();
     translate(position.x, position.y, -10); 
     lights();
@@ -45,6 +45,6 @@ class Paddle {
     fill(227, 118, 12);
     box(size.width, size.height, 20);
     popMatrix();
-
   }
 }
+

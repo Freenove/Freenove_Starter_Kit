@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Voltmeter
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to make a voltmeter through communicate to an Arduino 
@@ -22,6 +22,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl = new DrawControl(40);
 
 void setup()
 {
@@ -37,7 +38,10 @@ void setup()
 void draw()
 {
   if (!serialDevice.active())
+  {
     serialDevice.start();
+    drawControl.reset();
+  }
 
   int analog = serialDevice.requestAnalog();
   if (analog != -1)
@@ -54,7 +58,7 @@ void draw()
     text(sVol + "V", width / 2, 90);
   }
 
-  delay(30);
+  drawControl.delay();
 }
 
 void keyPressed() 

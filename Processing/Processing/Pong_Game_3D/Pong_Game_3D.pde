@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Pong Game
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/22
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to play pong game through communicate to an Arduino 
@@ -25,9 +25,11 @@ float acceleration = 0.5;
 float deviate = 1;
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl = new DrawControl(40);
+
 Ball ball;
 Paddle lPaddle, rPaddle;
-GameState gameState = GameState.WELCOME;
+int gameState = GameState.WELCOME;
 int lScore, rScore;
 
 void setup() {
@@ -46,7 +48,10 @@ void setup() {
 
 void draw() {
   if (!serialDevice.active())
+  {
     serialDevice.start();
+    drawControl.reset();
+  }
 
   int[] analogs = new int[2];
   analogs = serialDevice.requestAnalogs(2);
@@ -63,7 +68,8 @@ void draw() {
     lPaddle.display();
     rPaddle.display();
     showInfo("Pong Game");
-  } else if (gameState == GameState.PLAYING)
+  } 
+  else if (gameState == GameState.PLAYING)
   {  
     ball.updata();
     calculateGame();
@@ -71,13 +77,15 @@ void draw() {
     ball.display();
     lPaddle.display();
     rPaddle.display();
-  } else if (gameState == GameState.PLAYER1WIN)
+  } 
+  else if (gameState == GameState.PLAYER1WIN)
   {
     showGUI();
     lPaddle.display();
     rPaddle.display();
     showInfo("Player 1 win!");
-  } else if (gameState == GameState.PLAYER2WIN)
+  } 
+  else if (gameState == GameState.PLAYER2WIN)
   {
     showGUI();
     lPaddle.display();
@@ -85,7 +93,7 @@ void draw() {
     showInfo("Player 2 win!");
   }
 
-  delay(5);
+  drawControl.delay();
 }
 
 void showInfo(String info)
@@ -110,7 +118,8 @@ void calculateGame()
     {
       rScore++;
       ball.reset();
-    } else
+    } 
+    else
     {
       ball.speed.getSpeed();
       ball.speed.speed += acceleration;
@@ -125,7 +134,8 @@ void calculateGame()
     {
       lScore++;
       ball.reset();
-    } else
+    } 
+    else
     {
       ball.speed.getSpeed();
       ball.speed.speed += acceleration;
@@ -160,7 +170,8 @@ void keyPressed() {
   if (key == '\n' || key == '\r')
   {
     link("http://www.freenove.com");
-  } else if (key == ' ')
+  } 
+  else if (key == ' ')
   {
     lScore = 0;
     rScore = 0;
@@ -168,3 +179,4 @@ void keyPressed() {
     gameState = GameState.PLAYING;
   }
 }
+

@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Snake Game
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to play snake game through communicate to an Arduino 
@@ -23,6 +23,7 @@
 int threshold = 400;
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl = new DrawControl(40);
 
 Snake snake;
 Food food;
@@ -42,7 +43,10 @@ void setup() {
 
 void draw() {
   if (!serialDevice.active())
+  {
     serialDevice.start();
+    drawControl.reset();
+  }
 
   int[] analogs = new int[2];
   analogs = serialDevice.requestAnalogs(2);
@@ -52,14 +56,16 @@ void draw() {
     {    
       if (snake.direction != Direction.DOWN)
         snake.nextDirection = Direction.UP;
-    } else if (analogs[1] > 512 + threshold) {
+    } 
+    else if (analogs[1] > 512 + threshold) {
       if (snake.direction != Direction.UP)
         snake.nextDirection = Direction.DOWN;
     }
     if (analogs[0] < 512 - threshold) {
       if (snake.direction != Direction.RIGHT)
         snake.nextDirection = Direction.LEFT;
-    } else if (analogs[0] > 512 + threshold) {
+    } 
+    else if (analogs[0] > 512 + threshold) {
       if (snake.direction != Direction.LEFT)
         snake.nextDirection = Direction.RIGHT;
     }
@@ -77,7 +83,8 @@ void draw() {
     textAlign(CENTER, CENTER);
     text("Snake Game", width / 2, height / 2 - 24);
     text("Press Space to start", width / 2, height / 2 + 24);
-  } else if (snake.gameState == GameState.PLAYING)
+  } 
+  else if (snake.gameState == GameState.PLAYING)
   {
     if (snake.body[0].x == food.position.x && snake.body[0].y == food.position.y)
     {
@@ -87,7 +94,8 @@ void draw() {
     }
     snake.step();
     showGame();
-  } else if (snake.gameState == GameState.LOSE)
+  } 
+  else if (snake.gameState == GameState.LOSE)
   {
     showGame();
     rectMode(CENTER);
@@ -101,7 +109,7 @@ void draw() {
     text("Press Space to start", width / 2, height / 2 + 24);
   }
 
-  delay(5);
+  drawControl.delay();
 }
 
 void showGame()
@@ -128,22 +136,27 @@ void keyPressed() {
     {
       if (snake.direction != Direction.DOWN)
         snake.nextDirection = Direction.UP;
-    } else if (keyCode == DOWN) {
+    } 
+    else if (keyCode == DOWN) {
       if (snake.direction != Direction.UP)
         snake.nextDirection = Direction.DOWN;
-    } else if (keyCode == LEFT) {
+    } 
+    else if (keyCode == LEFT) {
       if (snake.direction != Direction.RIGHT)
         snake.nextDirection = Direction.LEFT;
-    } else if (keyCode == RIGHT) {
+    } 
+    else if (keyCode == RIGHT) {
       if (snake.direction != Direction.LEFT)
         snake.nextDirection = Direction.RIGHT;
     }
-  } else
+  } 
+  else
   {
     if (key == '\n' || key == '\r')
     {
       link("http://www.freenove.com");
-    } else if (key == ' ')
+    } 
+    else if (key == ' ')
     {
       snake.reset();
       food.generate(snake.body, snake.length);
@@ -151,3 +164,4 @@ void keyPressed() {
     }
   }
 }
+

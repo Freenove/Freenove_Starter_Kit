@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   BasicClass
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/22
+ * Date    2016/8/6
  *******************************************************************************
  * Brief
  *   These basic classes are for pong game.
@@ -84,7 +84,11 @@ class Speed
 /*
  * Brief  This enum is used to save a gameState
  *****************************************************************************/
-enum GameState
+class GameState
 {
-  WELCOME, PLAYING, PLAYER1WIN, PLAYER2WIN
+  final static int WELCOME = 0;
+  final static int PLAYING = 1;
+  final static int PLAYER1WIN = 2;
+  final static int PLAYER2WIN = 3;
 }
+

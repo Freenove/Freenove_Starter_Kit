@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Oscilloscope
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to make an oscilloscope through communicate to an 
@@ -20,13 +20,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-int analogsCount;       // Length of analogs[] array
-int drawCycle;          // Interval of draw() function execute
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl;
 int[] analogs;          // Analog data send from serial device
+int analogsCount;       // Length of analogs[] array
 int voltage = 0;        // Voltage 
-long drawTimes = 0;     // Times of draw() function execute
 int hMult = 1;          // Horizontal zoom ratio, relative to 1 second
 boolean pause = false;  // Storage is suspended display
 
@@ -46,7 +45,8 @@ void setup()
   for (int i = 0; i < analogsCount; i++)
     analogs[i] = -1;
 
-  drawCycle = 20 * width / analogsCount;
+  int drawCycle = 20 * width / analogsCount;
+  drawControl = new DrawControl(drawCycle);
 }
 
 void draw()
@@ -54,7 +54,7 @@ void draw()
   if (!serialDevice.active())
   {
     serialDevice.start();
-    drawTimes = millis() / drawCycle;
+    drawControl.reset();
   }
 
   int analog = serialDevice.requestAnalog();
@@ -90,7 +90,7 @@ void draw()
       // Prepare wave data
       for (int i = 0; i < analogsCount - 1; i++)
         analogs[i] = analogs[i + 1];
-      analogs[analogsCount - 1] = height - 10 - analog * (height - 10 - 30) / 1024;
+      analogs[analogsCount - 1] = height - 10 - analog * (height - 10 - 30) / 1023;
       // Voltage text
       voltage = analog * 500 / 1023;
     }
@@ -107,8 +107,7 @@ void draw()
     }
   }
 
-  while (millis() < drawTimes * drawCycle);
-  drawTimes++;
+  drawControl.delay();
 }
 
 void keyPressed() 
@@ -123,7 +122,8 @@ void keyPressed()
         hMult = 5;
       else if (hMult == 5)
         hMult = 10;
-    } else if (keyCode == DOWN) 
+    } 
+    else if (keyCode == DOWN) 
     {
       if (hMult == 10)
         hMult = 5;
@@ -132,7 +132,8 @@ void keyPressed()
       else if (hMult == 2)
         hMult = 1;
     }
-  } else 
+  } 
+  else 
   {
     if (key == ' ') 
     {
@@ -142,9 +143,11 @@ void keyPressed()
         for (int i = 0; i < analogsCount; i++)
           analogs[i] = -1;
       }
-    } else if (key == '\n' || key == '\r')
+    } 
+    else if (key == '\n' || key == '\r')
     {
       link("http://www.freenove.com");
     }
   }
 }
+

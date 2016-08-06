@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   Snake
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  *******************************************************************************
  * Brief
  *   This class is for snake game.
@@ -24,11 +24,11 @@ class Snake {
   int length;
   int speed;
   int stepCounter;
-  Direction direction; 
-  Direction nextDirection; 
+  int direction; 
+  int nextDirection; 
   Point[] body;
 
-  GameState gameState = GameState.WELCOME;
+  int gameState = GameState.WELCOME;
 
   Snake(GridMap gridMap)
   {
@@ -85,17 +85,20 @@ class Snake {
       body[0] = new Point(body[1].x, body[1].y - 1);
       if (body[0].y < 0)
         gameState = GameState.LOSE;
-    } else if (direction == Direction.DOWN)
+    } 
+    else if (direction == Direction.DOWN)
     {
       body[0] = new Point(body[1].x, body[1].y + 1);
       if (body[0].y > map.gripSize.height - 1)
         gameState = GameState.LOSE;
-    } else if (direction == Direction.LEFT)
+    } 
+    else if (direction == Direction.LEFT)
     {
       body[0] = new Point(body[1].x - 1, body[1].y);
       if (body[0].x < 0)
         gameState = GameState.LOSE;
-    } else if (direction == Direction.RIGHT)
+    } 
+    else if (direction == Direction.RIGHT)
     {
       body[0] = new Point(body[1].x + 1, body[1].y);
       if (body[0].x > map.gripSize.width - 1)
@@ -109,3 +112,4 @@ class Snake {
     }
   }
 }
+

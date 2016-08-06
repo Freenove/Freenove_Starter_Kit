@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Dual Channel Voltmeter
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to make a voltmeter through communicate to an Arduino 
@@ -22,6 +22,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl = new DrawControl(40);
 
 void setup()
 {
@@ -37,7 +38,10 @@ void setup()
 void draw()
 {
   if (!serialDevice.active())
+  {
     serialDevice.start();
+    drawControl.reset();
+  }
 
   int[] analogs = new int[2];
   analogs = serialDevice.requestAnalogs(2);
@@ -55,7 +59,7 @@ void draw()
     text("A1: " + sVol2 + "V", width / 2, 155);
   }
 
-  delay(30);
+  drawControl.delay();
 }
 
 void keyPressed() 

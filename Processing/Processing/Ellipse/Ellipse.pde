@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Two Dimensional Ellipse
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  ******************************************************************************
  * Brief
  *   This sketch is used to control a 2D ellipse through communicate to an 
@@ -22,6 +22,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
+DrawControl drawControl = new DrawControl(40);
 
 void setup()
 {
@@ -37,7 +38,10 @@ void setup()
 void draw()
 {
   if (!serialDevice.active())
+  {
     serialDevice.start();
+    drawControl.reset();
+  }
 
   int[] analogs = new int[2];
   analogs = serialDevice.requestAnalogs(2);
@@ -47,7 +51,7 @@ void draw()
     drawEllipse(analogs[0], analogs[1]);
   }
 
-  delay(10);
+  drawControl.delay();
 }
 
 void drawEllipse(int x, int y)

@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   BasicClass
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/7/20
+ * Date    2016/8/6
  *******************************************************************************
  * Brief
  *   These basic classes are for snake game.
@@ -54,17 +54,23 @@ class Size
 /*
  * Brief  This enum is used to save a direction
  *****************************************************************************/
-enum Direction
+class Direction
 {
-  UP, DOWN, LEFT, RIGHT
+  final static int UP = 0;
+  final static int DOWN = 1;
+  final static int LEFT = 2;
+  final static int RIGHT = 3;
 }
 
 /*
  * Brief  This enum is used to save a gameState
  *****************************************************************************/
-enum GameState
+class GameState
 {
-  WELCOME, PLAYING, WIN, LOSE
+  final static int WELCOME = 0;
+  final static int PLAYING = 1;
+  final static int WIN = 2;
+  final static int LOSE = 3;
 }
 
 /*
