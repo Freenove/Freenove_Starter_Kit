@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Two Dimensional Ellipse
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/6
+ * Date    2016/8/7
  ******************************************************************************
  * Brief
  *   This sketch is used to control a 2D ellipse through communicate to an 
@@ -39,7 +39,11 @@ void draw()
 {
   if (!serialDevice.active())
   {
-    serialDevice.start();
+    if (!serialDevice.start())
+    {
+      delay(1000);
+      return;
+    }
     drawControl.reset();
   }
 

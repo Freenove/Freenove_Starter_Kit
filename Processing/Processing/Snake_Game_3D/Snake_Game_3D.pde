@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Snake Game
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/6
+ * Date    2016/8/7
  ******************************************************************************
  * Brief
  *   This sketch is used to play snake game through communicate to an Arduino 
@@ -44,7 +44,11 @@ void setup() {
 void draw() {
   if (!serialDevice.active())
   {
-    serialDevice.start();
+    if (!serialDevice.start())
+    {
+      delay(1000);
+      return;
+    }
     drawControl.reset();
   }
 

@@ -5,7 +5,7 @@
   The Processing sketch will automatically detect and connect to this board which
   use the same trans format.
 
-  modified 2016/7/18
+  modified 2016/8/7
   by http://www.freenove.com
 */
 
@@ -20,33 +20,29 @@ void setup() {
 }
 
 void loop() {
-  // Do not put code here that will make each loop execute more than 5ms
-  static int counter = 0;
-  if (counter == 1000)
+  // Do not put code here that will make each loop execute more than 20ms
+  unsigned long msNow = millis();
+  if (msNow % 2000 < 1000)
     digitalWrite(ledPin, HIGH);
-  else if (counter == 2000) {
+  else
     digitalWrite(ledPin, LOW);
-    counter = 0;
-  }
-  counter++;
-  delay(1);
 }
 
 void serialEvent() {
-  static byte inData[24];
-  static byte inByte, inNum = 0;
+  static byte inData[64];
+  static byte inDataNum = 0;
 
   while (Serial.available() > 0)
   {
-    inByte = Serial.read();
+    byte inByte = Serial.read();
     if (inByte == SerialCommand.transStart)
-      inNum = 0;
-    inData[inNum++] = inByte;
+      inDataNum = 0;
+    inData[inDataNum++] = inByte;
     if (inByte == SerialCommand.transEnd)
       break;
   }
 
-  if (inData[0] == SerialCommand.transStart && inData[inNum - 1] == SerialCommand.transEnd)
+  if (inData[0] == SerialCommand.transStart && inData[inDataNum - 1] == SerialCommand.transEnd)
   {
     Serial.write(SerialCommand.transStart);
     if (inData[1] == SerialCommand.requestEcho)

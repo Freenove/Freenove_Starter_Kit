@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   SerialDevice
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/6
+ * Date    2016/8/7
  *******************************************************************************
  * Brief
  *   This class is used to connect a specific serial port.
@@ -83,9 +83,10 @@ class SerialDevice
     println(time() + "Start connect device...");
     String[] serialNames = Serial.list();
     if (serialNames.length == 0)
+    {
       println(time() + "No serial port detected, waiting for connection...");
-    while (serialNames.length == 0)
-      serialNames = Serial.list();
+      return false;
+    }
     print(time() + "Detected serial port: ");
     for (int i = 0; i < serialNames.length; i++)
       print(serialNames[i] + " ");
@@ -175,21 +176,23 @@ class SerialDevice
         byte[] inTemp = new byte[1];
         serial.readBytes(inTemp);
         byte inByte = inTemp[0];
-        inData[inDataNum++] = inByte;
 
         if (inByte == SerialCommand.transStart)
           inDataNum = 0;
-        else if (inByte == SerialCommand.transEnd)
-        {
-          byte[] data = new byte[inDataNum];
-          for (int i = 0; i < inDataNum; i++)
-            data[i] = inData[i];
-          return data;
-        }
+        inData[inDataNum++] = inByte;
+        if (inByte == SerialCommand.transEnd)
+          break;
         startTime = millis();
       }
+    } while (millis() - startTime < readTimeOut);
+
+    if (inData[0] == SerialCommand.transStart && inData[inDataNum - 1] == SerialCommand.transEnd)
+    {
+      byte[] data = new byte[inDataNum - 2];
+      for (int i = 0; i < inDataNum - 2; i++)
+        data[i] = inData[i + 1];
+      return data;
     }
-    while (millis () - startTime < readTimeOut);
 
     return null;
   }
