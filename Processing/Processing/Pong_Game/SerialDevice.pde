@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   SerialDevice
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/7
+ * Date    2016/8/8
  *******************************************************************************
  * Brief
  *   This class is used to connect a specific serial port.
@@ -11,7 +11,7 @@
  *******************************************************************************
  * Serial data formats
  *   Baud    115200
- *   Data    Range 0 ~ 99 per data byte
+ *   Data    Range 0 ~ 127 per data byte
  *   Format  0          1       2       ... n-1       n 
  *           transStart data[0] data[1] ... data[n-1] transEnd
  *******************************************************************************
@@ -33,11 +33,11 @@ import processing.serial.*;
  *****************************************************************************/
 class SerialCommand
 {
-  // Trans control command, range 200 ~ 255
-  final static byte transStart = (byte)200;
-  final static byte transEnd = (byte)201;
+  // Trans control command, range 128 ~ 255
+  final static byte transStart = (byte)128;
+  final static byte transEnd = (byte)129;
 
-  // General command , range 0 ~ 199
+  // General command , range 0 ~ 127
   // The odd command is sent by the requesting party
   // The even command is sent by the responding party
   // Request echo, to confirm the device
@@ -157,7 +157,6 @@ class SerialDevice
 
   private void write(Serial serial, byte[] data)
   {
-    serial.clear();
     serial.write(SerialCommand.transStart);
     serial.write(data);
     serial.write(SerialCommand.transEnd);
@@ -207,7 +206,7 @@ class SerialDevice
     {
       if (data[0] == SerialCommand.Analog)
       {
-        return data[1] * 100 + data[2];
+        return data[1] * 128 + data[2];
       }
     }
     return -1;
@@ -227,7 +226,7 @@ class SerialDevice
         int[] analogs = new int[(data.length - 1) / 2];
         for (int i = 0; i < analogs.length; i++)
         {
-          analogs[i] = data[i * 2 + 1] * 100 + data[i * 2 + 2];
+          analogs[i] = data[i * 2 + 1] * 128 + data[i * 2 + 2];
         }
         return analogs;
       }
@@ -266,4 +265,3 @@ class DrawControl
     drawTimes++;
   }
 }
-

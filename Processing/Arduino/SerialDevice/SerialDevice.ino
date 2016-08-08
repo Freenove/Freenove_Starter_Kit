@@ -1,12 +1,13 @@
 /*
-  Sketch SerialDevice
-
-  This sketch is used to communicate to Processing sketch running on PC.
-  The Processing sketch will automatically detect and connect to this board which
-  use the same trans format.
-
-  modified 2016/8/7
-  by http://www.freenove.com
+  Sketch    SerialDevice
+  Author    Ethan Pan @ Freenove (http://www.freenove.com)
+  Date      2016/8/8
+  Brief     This sketch is used to communicate to Processing sketch running
+            on PC. The Processing sketch will automatically detect and
+            connect to this board which use the same trans format.
+  Copyright Copyright © Freenove (http://www.freenove.com)
+  License   Creative Commons Attribution ShareAlike 3.0
+            (http://creativecommons.org/licenses/by-sa/3.0/legalcode)
 */
 
 #include "SerialCommand.h"
@@ -53,8 +54,8 @@ void serialEvent() {
     {
       int analog = analogRead(analogPins[0]);
       Serial.write(SerialCommand.Analog);
-      Serial.write(analog / 100);
-      Serial.write(analog % 100);
+      Serial.write(analog / 128);
+      Serial.write(analog % 128);
     }
     else if (inData[1] == SerialCommand.requestAnalogs)
     {
@@ -64,8 +65,8 @@ void serialEvent() {
       Serial.write(SerialCommand.Analogs);
       for (int i = 0; i < inData[2]; i++)
       {
-        Serial.write(analogs[i] / 100);
-        Serial.write(analogs[i] % 100);
+        Serial.write(analogs[i] / 128);
+        Serial.write(analogs[i] % 128);
       }
     }
     Serial.write(SerialCommand.transEnd);
