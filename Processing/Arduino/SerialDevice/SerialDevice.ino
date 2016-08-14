@@ -1,7 +1,7 @@
 /*
   Sketch    SerialDevice
   Author    Ethan Pan @ Freenove (http://www.freenove.com)
-  Date      2016/8/8
+  Date      2016/8/14
   Brief     This sketch is used to communicate to Processing sketch running
             on PC. The Processing sketch will automatically detect and
             connect to this board which use the same trans format.
@@ -40,7 +40,8 @@ void serialEvent() {
       inDataNum = 0;
     inData[inDataNum++] = inByte;
     if (inByte == SerialCommand.transEnd)
-      break;
+      if (inData[0] == SerialCommand.transStart)
+        break;
   }
 
   if (inData[0] == SerialCommand.transStart && inData[inDataNum - 1] == SerialCommand.transEnd)

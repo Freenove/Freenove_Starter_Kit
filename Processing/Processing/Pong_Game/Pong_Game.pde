@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Pong Game
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/7
+ * Date    2016/8/14
  ******************************************************************************
  * Brief
  *   This sketch is used to play pong game through communicate to an Arduino 
@@ -25,7 +25,6 @@ float acceleration = 0.5;
 float deviate = 1;
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
-DrawControl drawControl = new DrawControl(40);
 
 Ball ball;
 Paddle lPaddle, rPaddle;
@@ -40,6 +39,7 @@ void setup() {
   text("Starting...", width / 2, (height - 40) / 2);
   textSize(16);
   text("www.freenove.com", width / 2, height - 20);
+  frameRate(1000 / 40);
 
   ball = new Ball(10);
   lPaddle = new Paddle(new Size(12, 80), 12);
@@ -54,7 +54,6 @@ void draw() {
       delay(1000);
       return;
     }
-    drawControl.reset();
   }
 
   int[] analogs = new int[2];
@@ -96,8 +95,6 @@ void draw() {
     rPaddle.display();
     showInfo("Player 2 win!");
   }
-
-  drawControl.delay();
 }
 
 void showInfo(String info)

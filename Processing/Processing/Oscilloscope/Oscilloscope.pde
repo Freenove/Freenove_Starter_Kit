@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Oscilloscope
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/7
+ * Date    2016/8/14
  ******************************************************************************
  * Brief
  *   This sketch is used to make an oscilloscope through communicate to an 
@@ -22,7 +22,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
-DrawControl drawControl;
 int[] analogs;          // Analog data send from serial device
 int analogsCount;       // Length of analogs[] array
 int voltage = 0;        // Voltage 
@@ -46,7 +45,7 @@ void setup()
     analogs[i] = -1;
 
   int drawCycle = 20 * width / analogsCount;
-  drawControl = new DrawControl(drawCycle);
+  frameRate(1000 / drawCycle);
 }
 
 void draw()
@@ -58,7 +57,6 @@ void draw()
       delay(1000);
       return;
     }
-    drawControl.reset();
   }
 
   int analog = serialDevice.requestAnalog();
@@ -110,8 +108,6 @@ void draw()
         line(i, analogs[a], i - hMult * width / analogsCount, analogs[a - 1]);
     }
   }
-
-  drawControl.delay();
 }
 
 void keyPressed() 

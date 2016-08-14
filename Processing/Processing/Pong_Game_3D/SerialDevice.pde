@@ -2,7 +2,7 @@
  *******************************************************************************
  * Class   SerialDevice
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/8
+ * Date    2016/8/14
  *******************************************************************************
  * Brief
  *   This class is used to connect a specific serial port.
@@ -180,10 +180,12 @@ class SerialDevice
           inDataNum = 0;
         inData[inDataNum++] = inByte;
         if (inByte == SerialCommand.transEnd)
-          break;
+          if (inData[0] == SerialCommand.transStart)
+            break;
         startTime = millis();
       }
-    } while (millis() - startTime < readTimeOut);
+    } 
+    while (millis () - startTime < readTimeOut);
 
     if (inData[0] == SerialCommand.transStart && inData[inDataNum - 1] == SerialCommand.transEnd)
     {
@@ -240,28 +242,3 @@ class SerialDevice
   }
 }
 
-/*
- * Brief  This class is used to contorol call time interval of draw function, 
- *        try to make time interval as the same.
- *****************************************************************************/
-class DrawControl
-{
-  private int drawCycle = 0;
-  private int drawTimes = 0;
-
-  DrawControl(int DrawCycle)
-  {
-    drawCycle = DrawCycle;
-  }
-
-  public void reset()
-  {
-    drawTimes = millis() / drawCycle;
-  }
-
-  public void delay()
-  {
-    while (millis () < drawTimes * drawCycle);
-    drawTimes++;
-  }
-}

@@ -2,7 +2,7 @@
  ******************************************************************************
  * Sketch  Three Dimensional Box
  * Author  Ethan Pan @ Freenove (http://www.freenove.com)
- * Date    2016/8/7
+ * Date    2016/8/14
  ******************************************************************************
  * Brief
  *   This sketch is used to control a 3D box through communicate to an Arduino 
@@ -22,7 +22,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SerialDevice serialDevice = new SerialDevice(this);
-DrawControl drawControl = new DrawControl(40);
 
 void setup()
 {
@@ -33,6 +32,7 @@ void setup()
   text("Starting...", width / 2, (height - 40) / 2);
   textSize(16);
   text("www.freenove.com", width / 2, height - 20);
+  frameRate(1000 / 40);
 }
 
 void draw()
@@ -44,7 +44,6 @@ void draw()
       delay(1000);
       return;
     }
-    drawControl.reset();
   }
 
   int[] analogs = new int[2];
@@ -56,8 +55,6 @@ void draw()
     drawBox(analogs[0], analogs[1]);
     drawBoxColor(analogs[0], analogs[1]);
   }
-
-  drawControl.delay();
 }
 
 void drawBox(int x, int y)
@@ -113,3 +110,4 @@ void keyPressed()
     link("http://www.freenove.com");
   }
 }
+
